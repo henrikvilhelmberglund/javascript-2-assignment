@@ -14,6 +14,6 @@
 		<a
 			class="underline-blue-600 underline hover:text-blue-600"
 			href="https://github.com/henrikvilhelmberglund"
-			><img class="inline w-6" src="Henrik.png" alt="avatar" />henrikvilhelmberglund</a>
+			><img class="inline w-6" src="{base}/Henrik.png" alt="avatar" />henrikvilhelmberglund</a>
 	</p>
 </footer>
