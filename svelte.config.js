@@ -10,7 +10,7 @@ const config = {
 		adapter: adapter(),
 		paths: {
 			// change path below to your github repo if using Github Pages
-			base: dev ? "" : "/sveltekit-unocss-template",
+			base: dev ? "" : "/javascript-2-assignment",
 		},
 	},
 };
