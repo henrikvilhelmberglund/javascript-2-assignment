@@ -1,5 +1,6 @@
 <script>
 	import { base } from "$app/paths";
+	import { Character } from "$lib/character";
 </script>
 
 <main class="flex flex-col items-center justify-center [&>*]:m-1">
