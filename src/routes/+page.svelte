@@ -1,13 +1,13 @@
 <script>
 	import { base } from "$app/paths";
-
 </script>
 
-<main class="[&>*]:m-4">
-
+<main class="flex flex-col items-center justify-center [&>*]:m-1">
+	<h1 class="text-7xl">Star Wars</h1>
+	<h1 class="text-5xl">The comparisons strike again</h1>
 </main>
 
-<footer class="m-4 h-64">
+<footer class="absolute right-0 bottom-0 m-4">
 	<p>
 		by
 		<a
