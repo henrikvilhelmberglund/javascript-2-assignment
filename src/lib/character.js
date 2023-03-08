@@ -3,8 +3,8 @@ export class Character {
 	constructor(name, gender, height, mass, hairColor, skinColor, eyeColor, movies, pictureURL) {
 		this.name = name;
 		this.gender = gender;
-		this.height = height;
-		this.mass = mass;
+		this.height = JSON.parse(height);
+		this.mass = JSON.parse(mass);
 		this.hairColor = hairColor;
 		this.skinColor = skinColor;
 		this.eyeColor = eyeColor;
