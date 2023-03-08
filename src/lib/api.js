@@ -4,8 +4,8 @@ export async function fetchCharacterData(name) {
 			method: "GET",
 		});
 		let data = await response.json();
-		console.log(data.results);
-		return data.results;
+		console.log(data);
+		return data;
 	} catch (error) {
 		return error;
 	}
