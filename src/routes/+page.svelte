@@ -15,8 +15,8 @@
 
 		console.log(result1.results[0]);
 
-		let image1 = result1.results[0].name.replaceAll(" ", "_") + "_placeholder.png";
-		let image2 = result2.results[0].name.replaceAll(" ", "_") + "_placeholder.png";
+		let image1 = "images/" + result1.results[0].name.replaceAll(" ", "_") + "_placeholder.png";
+		let image2 = "images/" + result2.results[0].name.replaceAll(" ", "_") + "_placeholder.png";
 
 		let {
 			name: name1,
@@ -87,17 +87,27 @@
 
 	<button on:click={createCharacters} class="rounded-lg bg-blue-400 p-2">Get data</button>
 
-	<article>
-		<p>
-			{JSON.stringify(character1) ?? ""}
-		</p>
-		<p>
-			{JSON.stringify(character2) ?? ""}
-		</p>
+	<article class="flex flex-row justify-between ">
+		{#if character1}
+			<div class="flex-col items-center">
+				<h2 class="text-2xl">
+					{character1.name ?? "empty"}
+				</h2>
+				<img class="w-[50%]" src={character1.pictureURL} alt="a" />
+			</div>
+		{/if}
+		{#if character2}
+			<div class="flex-col items-center">
+				<h2 class="text-2xl">
+					{character2.name ?? "empty"}
+				</h2>
+				<img class="w-[50%]" src={character2.pictureURL} alt="b" />
+			</div>
+		{/if}
 	</article>
 </main>
 
-<footer class="absolute right-0 bottom-0 m-4">
+<footer class="fixed right-0 bottom-0 m-4">
 	<p>
 		by
 		<a
