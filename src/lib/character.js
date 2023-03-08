@@ -1,3 +1,4 @@
+
 export class Character {
 	constructor(name, gender, height, mass, hairColor, skinColor, eyeColor, movies, pictureURL) {
 		this.name = name;
@@ -11,3 +12,19 @@ export class Character {
 		this.pictureURL = pictureURL;
 	}
 }
+
+export const allCharacters = [
+	"Luke Skywalker",
+	"Obi-Wan Kenobi",
+	"Leia Organa",
+	"Jabba Desilijic Tiure",
+	"R2-D2",
+	"C-3PO",
+	"Chewbacca",
+	"Han Solo",
+	"Yoda",
+	"Darth Vader",
+	"Padmé Amidala",
+	"Ayla Secura",
+	"Jar Jar Binks",
+];
