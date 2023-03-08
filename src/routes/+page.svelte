@@ -69,7 +69,7 @@
 	<h1 class="text-7xl">Star Wars</h1>
 	<h1 class="text-5xl">The comparisons strike again</h1>
 
-	<article>
+	<div>
 		<label for="character1Name">Pick character 1</label>
 		<select bind:value={character1Name} name="character1Name" id="character1Name">
 			{#each allCharacters as character}
@@ -83,9 +83,18 @@
 				<option value={character}>{character}</option>
 			{/each}
 		</select>
-	</article>
+	</div>
 
 	<button on:click={createCharacters} class="rounded-lg bg-blue-400 p-2">Get data</button>
+
+	<article>
+		<p>
+			{JSON.stringify(character1) ?? ""}
+		</p>
+		<p>
+			{JSON.stringify(character2) ?? ""}
+		</p>
+	</article>
 </main>
 
 <footer class="absolute right-0 bottom-0 m-4">
