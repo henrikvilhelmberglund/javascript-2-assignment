@@ -1,8 +1,8 @@
-
 export class Character {
 	constructor(name, gender, height, mass, hairColor, skinColor, eyeColor, movies, pictureURL) {
 		this.name = name;
 		this.gender = gender;
+		// turn height and mass into numbers
 		this.height = JSON.parse(height);
 		this.mass = JSON.parse(mass);
 		this.hairColor = hairColor;
