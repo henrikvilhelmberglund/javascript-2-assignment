@@ -10,8 +10,8 @@
 	let character2;
 
 	async function createCharacters() {
-		printCharacterData = false;
-		showCompareCharactersButton = true;
+		removeOldData();
+
 		let result1 = await api.fetchCharacterData(character1Name);
 		let result2 = await api.fetchCharacterData(character2Name);
 
@@ -69,6 +69,13 @@
 	}
 	let printCharacterData = false;
 	let showCompareCharactersButton = false;
+	let firstAppearance = [false, false];
+
+	function removeOldData() {
+		printCharacterData = false;
+		showCompareCharactersButton = true;
+		firstAppearance = [false, false];
+	}
 
 	function caps(string) {
 		if (string === "hairColor" || string === "eyeColor" || string === "skinColor") {
@@ -194,33 +201,48 @@
 						}}>Compare characters</button>
 				{/if}
 			</div>
-			<article class="flex flex-row justify-between ">
+			<div class="flex flex-row justify-between ">
 				{#each [character1, character2] as character, i}
-					<div class="flex-col items-center">
-						<h2 class="text-2xl">
-							{character.name ?? "empty"}
-						</h2>
-						<img class="w-[50%]" src={character.pictureURL} alt="a" />
-						{#if printCharacterData}
-							<div class="my-2 w-[50%] rounded-lg border-2 border-solid border-pink-500 p-2">
-								{#each Object.entries(character) as [key, value]}
-									{#if key !== "movies" && key !== "pictureURL"}
-										{#if key === "height"}
-											<p id="{key}_{i}">{caps(key)}: {value}cm</p>
-										{:else if key === "mass"}
-											<p id="{key}_{i}">{caps(key)}: {value}kg</p>
-										{:else}
-											<p id="{key}_{i}">{caps(key)}: {value}</p>
+					<article>
+						<div class="flex-col items-center">
+							<h2 class="text-2xl">
+								{character.name ?? "empty"}
+							</h2>
+							<img class="w-[50%]" src={character.pictureURL} alt="a" />
+							{#if printCharacterData}
+								<div class="my-2 w-[50%] rounded-lg border-2 border-solid border-pink-500 p-2">
+									{#each Object.entries(character) as [key, value]}
+										{#if key !== "movies" && key !== "pictureURL"}
+											{#if key === "height"}
+												<p id="{key}_{i}">{caps(key)}: {value}cm</p>
+											{:else if key === "mass"}
+												<p id="{key}_{i}">{caps(key)}: {value}kg</p>
+											{:else}
+												<p id="{key}_{i}">{caps(key)}: {value}</p>
+											{/if}
+										{:else if key === "movies"}
+											<p id="movies_{i}">Stars in {value.length} movies</p>
 										{/if}
-									{:else if key === "movies"}
-										<p id="movies_{i}">Stars in {value.length} movies</p>
-									{/if}
-								{/each}
-							</div>
-						{/if}
-					</div>
+									{/each}
+								</div>
+							{/if}
+						</div>
+						<div class="flex-row [&>*]:m-2 items-center">
+							<button
+								on:click={async () => {
+									firstAppearance[i] = await character.returnFirstAppearance(character.movies);
+								}}>Show first appearance</button>
+							<button>More buttons</button>
+						</div>
+						<div class="flex-col">
+							{#if firstAppearance[i]}
+								<p>{character.name} first appeared on film in {firstAppearance[i]}.</p>
+							{/if}
+						</div>
+					</article>
 				{/each}
-			</article>
+			</div>
+
 			{#if comparisonString && printCharacterData}
 				<aside class="my-4 flex items-center rounded-lg border-2 border-solid border-pink-500 p-2">
 					<ul>
