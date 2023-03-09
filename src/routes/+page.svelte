@@ -10,10 +10,12 @@
 	let character2;
 
 	async function createCharacters() {
+		printCharacterData = false;
 		let result1 = await api.fetchCharacterData(character1Name);
 		let result2 = await api.fetchCharacterData(character2Name);
 
 		console.log(result1.results[0]);
+		console.log(result2.results[0]);
 
 		let image1 = "images/" + result1.results[0].name.replaceAll(" ", "_") + "_placeholder.png";
 		let image2 = "images/" + result2.results[0].name.replaceAll(" ", "_") + "_placeholder.png";
@@ -63,6 +65,16 @@
 		);
 		console.log(character2);
 	}
+	let printCharacterData = false;
+
+	function caps(string) {
+		if (string === "hairColor" || string === "eyeColor" || string === "skinColor") {
+			let firstHalf = string.split("Color")[0];
+			return firstHalf[0].toUpperCase() + firstHalf.slice(1) + " color";
+		} else {
+			return string[0].toUpperCase() + string.slice(1);
+		}
+	}
 </script>
 
 <main class="flex flex-col items-center justify-center [&>*]:m-1">
@@ -87,24 +99,41 @@
 
 	<button on:click={createCharacters} class="rounded-lg bg-blue-400 p-2">Get data</button>
 
-	<article class="flex flex-row justify-between ">
-		{#if character1}
-			<div class="flex-col items-center">
-				<h2 class="text-2xl">
-					{character1.name ?? "empty"}
-				</h2>
-				<img class="w-[50%]" src={character1.pictureURL} alt="a" />
+	<div class="flex flex-col">
+		{#if character1 && character2}
+			<div class="items-center">
+				<button class="w-32 rounded-lg bg-blue-400 p-2" on:click={() => (printCharacterData = true)}
+					>Compare characters</button>
 			</div>
+			<article class="flex flex-row justify-between ">
+				{#each [character1, character2] as character}
+					<div class="flex-col items-center">
+						<h2 class="text-2xl">
+							{character.name ?? "empty"}
+						</h2>
+						<img class="w-[50%]" src={character.pictureURL} alt="a" />
+						{#if printCharacterData}
+							<div class="border-1 my-2 w-[50%] rounded-lg border-solid border-pink-500 p-2">
+								{#each Object.entries(character) as [key, value]}
+									{#if key !== "movies" && key !== "pictureURL"}
+										{#if key === "height"}
+											<p>{caps(key)}: {value}cm</p>
+										{:else if key === "mass"}
+											<p>{caps(key)}: {value}kg</p>
+										{:else}
+											<p>{caps(key)}: {value}</p>
+										{/if}
+									{:else if key === "movies"}
+										<p>Stars in {value.length} movies</p>
+									{/if}
+								{/each}
+							</div>
+						{/if}
+					</div>
+				{/each}
+			</article>
 		{/if}
-		{#if character2}
-			<div class="flex-col items-center">
-				<h2 class="text-2xl">
-					{character2.name ?? "empty"}
-				</h2>
-				<img class="w-[50%]" src={character2.pictureURL} alt="b" />
-			</div>
-		{/if}
-	</article>
+	</div>
 </main>
 
 <footer class="fixed right-0 bottom-0 m-4">
