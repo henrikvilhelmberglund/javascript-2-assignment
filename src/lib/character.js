@@ -1,3 +1,4 @@
+import { fetchSpecifics } from "./api";
 export class Character {
 	constructor(name, gender, height, mass, hairColor, skinColor, eyeColor, movies, pictureURL) {
 		this.name = name;
@@ -10,6 +11,22 @@ export class Character {
 		this.eyeColor = eyeColor;
 		this.movies = movies;
 		this.pictureURL = pictureURL;
+	}
+
+	async returnFirstAppearance(movies) {
+		let allMovies = [];
+		for (const movie of movies) {
+			let currentMovie = await fetchSpecifics(movie);
+			allMovies.push(currentMovie.release_date);
+			// console.log(currentMovie.release_date);
+		}
+
+		allMovies.sort((a, b) => {
+			return new Date(b.date) - new Date(a.date);
+		});
+		let firstAppearance = allMovies[0];
+		// console.log(firstAppearance);
+		return firstAppearance;
 	}
 }
 
