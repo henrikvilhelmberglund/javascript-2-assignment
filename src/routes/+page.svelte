@@ -69,6 +69,7 @@
 	}
 	let printCharacterData = false;
 	let showCompareCharactersButton = false;
+	let firstAppearance;
 
 	function caps(string) {
 		if (string === "hairColor" || string === "eyeColor" || string === "skinColor") {
@@ -219,6 +220,14 @@
 							</div>
 						{/if}
 					</div>
+					<button
+						on:click={async () => {
+							// fix should only display for one character
+							firstAppearance = await character.returnFirstAppearance(character.movies);
+						}}>Show first appearance</button>
+					{#if firstAppearance}
+						<p>{character.name} first appeared in {firstAppearance}</p>
+					{/if}
 				{/each}
 			</article>
 			{#if comparisonString && printCharacterData}
