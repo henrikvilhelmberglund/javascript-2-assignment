@@ -13,6 +13,11 @@ const config = {
 			base: dev ? "" : "/javascript-2-assignment",
 		},
 	},
+	vitePlugin: {
+		experimental: {
+			inspector: true,
+		},
+	},
 };
 
 export default config;
