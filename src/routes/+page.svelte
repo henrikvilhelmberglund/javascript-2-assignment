@@ -16,7 +16,11 @@
 	let character1;
 	let character2;
 
-	async function createCharacter(inputCharacter, inputName) {
+	let character1Loading;
+	let character2Loading;
+	let result;
+
+	async function createCharacter(inputCharacter, inputName, inputNum) {
 		if (inputCharacter?.name === inputName) {
 			// already same - skip logic
 			return inputCharacter;
@@ -24,7 +28,11 @@
 
 		removeOldData();
 
-		let result = await api.fetchCharacterData(inputName);
+		try {
+			result = await api.fetchCharacterData(inputName);
+		} catch (error) {
+			result = error;
+		}
 
 		console.log(result.results[0]);
 
@@ -52,8 +60,17 @@
 			movies,
 			image
 		);
-		console.log(character);
-		return character;
+
+		// warning, stupid code
+		if (inputNum === 1) {
+			character1 = character;
+			character1Loading = false;
+		}
+		if (inputNum === 2) {
+			character2 = character;
+			character2Loading = false;
+		}
+		return result;
 	}
 	let printCharacterData = false;
 	let showCompareCharactersButton = false;
@@ -144,6 +161,7 @@
 	<link rel="preload" href="StarJediRounded.woff2" as="font" type="font/woff2" crossorigin />
 </svelte:head>
 
+<!-- Loading spinner -->
 {#if !loadDone}
 	<div class="h-[100vh] w-[100vw] bg-black">
 		<div role="status" class="flex min-h-[50vh] items-center justify-center">
@@ -167,12 +185,13 @@
 {/if}
 
 {#if loadDone}
-	<main class="flex min-h-[1500px] flex-col items-center justify-start [&>*]:m-1">
+	<main class="flex flex-col items-center justify-start [&>*]:m-1">
 		<h1 class="font-starjedihollow pl-6 pt-12 text-8xl text-yellow-300 md:text-9xl">@</h1>
 		<h1 class="font-starjedi py-5 text-xl text-yellow-300 md:py-8 md:text-4xl">
 			the comparisons strike back
 		</h1>
 
+		<!-- Character picker -->
 		<div class="flex w-full  flex-row justify-around">
 			<div class="flex flex-col">
 				<label for="character1Name">Pick character 1</label>
@@ -203,15 +222,19 @@
 			</div>
 		</div>
 
+		<!-- getDataButton -->
 		<button
 			on:click={async () => {
-				character1 = await createCharacter(character1, character1Name);
-				character2 = await createCharacter(character2, character2Name);
+				character1Loading = true;
+				character2Loading = true;
+				// character1 = await createCharacter(character1, character1Name, character1LoadPromise);
+				// await createCharacter(character2, character2Name, character2LoadPromise);
 				showCompareCharactersButton = true;
 			}}
 			class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300"
 			>Get data</button>
 
+		<!-- showCompareCharactersButton -->
 		{#if character1 && character2}
 			<div class="items-center">
 				{#if showCompareCharactersButton}
@@ -229,32 +252,61 @@
 			</div>
 		{/if}
 
-		{#if character1 && character2}
-			<div class="flex flex-row gap-2">
-				{#each [character1, character2] as character, i}
-					<article class="flex flex-col items-center">
+		<!-- Loading thingy for promises -->
+		<div class="flex w-[100vw] flex-row justify-around">
+			{#if character1Loading}
+				<div class="relative">
+					{#await createCharacter(character1, character1Name, 1)}
+						<p class="absolute left-0 top-0">Loading...</p>
+					{:catch error}
+						<p class="absolute left-0 top-0">Couldn't load data :(</p>
+					{/await}
+				</div>
+			{/if}
+
+			{#if character2Loading}
+				<div class="relative">
+					{#await createCharacter(character2, character2Name, 2)}
+						<p class="absolute left-0 top-0">Loading...</p>
+					{:catch error}
+						<p class="absolute left-0 top-0">Couldn't load data :(</p>
+					{/await}
+				</div>
+			{/if}
+		</div>
+
+		<!-- Character display -->
+		<!-- {#if character1 && character2} -->
+		<div class="flex min-h-[90vh] flex-row gap-2">
+			{#each [character1, character2] as character, i}
+				<article class="flex flex-col items-center">
+					{#if character}
 						<h2 class="text-xl md:text-2xl">
-							{character.name ?? "empty"}
+							{character.name}
 						</h2>
 						<img class="" src="{base}/{character.pictureURL}" alt="a" />
-						{#if printCharacterData}
-							<div
-								class="my-2 w-full rounded-lg border-2 border-solid border-yellow-500 bg-black/70 p-2">
-								{#each Object.entries(character) as [key, value]}
-									{#if key !== "movies" && key !== "pictureURL"}
-										{#if key === "height"}
-											<p id="{key}_{i}">{caps(key)}: {value}cm</p>
-										{:else if key === "mass"}
-											<p id="{key}_{i}">{caps(key)}: {value}kg</p>
-										{:else}
-											<p id="{key}_{i}">{caps(key)}: {value}</p>
-										{/if}
-									{:else if key === "movies"}
-										<p id="movies_{i}">Stars in {value.length} movies</p>
+					{/if}
+					{#if printCharacterData}
+						<div
+							class="my-2 w-full rounded-lg border-2 border-solid border-yellow-500 bg-black/70 p-2">
+							{#each Object.entries(character) as [key, value]}
+								{#if key !== "movies" && key !== "pictureURL"}
+									{#if key === "height"}
+										<p id="{key}_{i}">{caps(key)}: {value}cm</p>
+									{:else if key === "mass"}
+										<p id="{key}_{i}">{caps(key)}: {value}kg</p>
+									{:else}
+										<p id="{key}_{i}">{caps(key)}: {value}</p>
 									{/if}
-								{/each}
-							</div>
-						{/if}
+								{:else if key === "movies"}
+									<p id="movies_{i}">Stars in {value.length} movies</p>
+								{/if}
+							{/each}
+						</div>
+					{/if}
+
+					<!-- Character method buttons -->
+					{#if character}
 						<div class="flex-row items-center [&>*]:m-2">
 							<button
 								on:click={async () => {
@@ -267,23 +319,25 @@
 								<p>{character.name} first appeared on film in {firstAppearance[i]}.</p>
 							{/if}
 						</div>
-					</article>
-				{/each}
-			</div>
+					{/if}
+				</article>
+			{/each}
+		</div>
 
-			{#if comparisonString && printCharacterData}
-				<aside
-					class="my-4 mb-12 flex items-center rounded-lg border-2 border-solid border-yellow-500 bg-black/70 p-2">
-					<ul>
-						{#each comparisonString.split("^") as li}
-							<li>
-								{li}
-							</li>
-						{/each}
-					</ul>
-				</aside>
-			{/if}
+		<!-- Comparison -->
+		{#if comparisonString && printCharacterData}
+			<aside
+				class="my-4 mb-12 flex items-center rounded-lg border-2 border-solid border-yellow-500 bg-black/70 p-2">
+				<ul>
+					{#each comparisonString.split("^") as li}
+						<li>
+							{li}
+						</li>
+					{/each}
+				</ul>
+			</aside>
 		{/if}
+		<!-- {/if} -->
 	</main>
 
 	<footer class="fixed right-0 bottom-0 z-[-100] m-4">
