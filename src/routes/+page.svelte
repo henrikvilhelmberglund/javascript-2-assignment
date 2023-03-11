@@ -151,12 +151,13 @@
 </script>
 
 <main class="flex flex-col items-center justify-center [&>*]:m-1">
-	<h1 class="text-7xl">Star Wars</h1>
-	<h1 class="text-5xl">The comparisons strike again</h1>
+	<h1 class="font-starjedihollow text-yellow-300 pl-6 pt-12 text-8xl md:text-9xl">@</h1>
+	<h1 class="font-starjedi text-yellow-300 py-5 md:py-8 text-xl md:text-4xl">the comparisons strike back</h1>
 
 	<div>
 		<label for="character1Name">Pick character 1</label>
 		<select
+			class="rounded border"
 			bind:value={character1Name}
 			on:change={(showCompareCharactersButton = false)}
 			name="character1Name"
@@ -168,6 +169,7 @@
 
 		<label for="character2Name">Pick character 2</label>
 		<select
+			class="rounded border"
 			bind:value={character2Name}
 			on:change={(showCompareCharactersButton = false)}
 			name="character2Name"
@@ -278,4 +280,27 @@
 		transition: all 300ms;
 		color: red;
 	}
+
+	@font-face {
+		font-family: "Star Jedi";
+		src: local("StarJedi.woff2"), url("StarJedi.woff2");
+	}
+	@font-face {
+		font-family: "Star Jedi Hollow";
+		src: local("StarJediHollow.woff2"), url("StarJediHollow.woff2");
+	}
+	@font-face {
+		font-family: "Star Jedi Rounded";
+		src: local("StarJediRounded.woff2"), url("StarJediRounded.woff2");
+	}
+
+	:global(body, select) {
+		background-color: black;
+		color: white;
+	}
+
+  :global(button) {
+		color: black !important;
+	}
+
 </style>
