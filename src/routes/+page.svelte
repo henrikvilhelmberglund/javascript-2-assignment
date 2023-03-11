@@ -208,7 +208,7 @@
 							<h2 class="text-2xl">
 								{character.name ?? "empty"}
 							</h2>
-							<img class="w-[50%]" src={character.pictureURL} alt="a" />
+							<img class="w-[50%]" src="{base}/{character.pictureURL}" alt="a" />
 							{#if printCharacterData}
 								<div class="my-2 w-[50%] rounded-lg border-2 border-solid border-pink-500 p-2">
 									{#each Object.entries(character) as [key, value]}
@@ -227,7 +227,7 @@
 								</div>
 							{/if}
 						</div>
-						<div class="flex-row [&>*]:m-2 items-center">
+						<div class="flex-row items-center [&>*]:m-2">
 							<button
 								on:click={async () => {
 									firstAppearance[i] = await character.returnFirstAppearance(character.movies);
