@@ -157,6 +157,11 @@
 	}
 </script>
 
+<svelte:head>
+	<link rel="preload" href="StarJedi.woff2" as="font" type="font/woff2" crossorigin />
+	<link rel="preload" href="StarJediHollow.woff2" as="font" type="font/woff2" crossorigin />
+	<link rel="preload" href="StarJediRounded.woff2" as="font" type="font/woff2" crossorigin />
+</svelte:head>
 
 {#if !loadDone}
 	<div class="h-[100vh] w-[100vw] bg-black">
@@ -297,6 +302,19 @@
 </footer>
 
 <style>
+	@font-face {
+		font-family: "Star Jedi";
+		src: local("StarJedi.woff2"), url("StarJedi.woff2");
+	}
+	@font-face {
+		font-family: "Star Jedi Hollow";
+		src: local("StarJediHollow.woff2"), url("StarJediHollow.woff2");
+		font-display: block;
+	}
+	@font-face {
+		font-family: "Star Jedi Rounded";
+		src: local("StarJediRounded.woff2"), url("StarJediRounded.woff2");
+	}
 	:global(.green) {
 		transition: all 300ms;
 		color: green;
@@ -307,26 +325,13 @@
 		color: red;
 	}
 
-	@font-face {
-		font-family: "Star Jedi";
-		src: local("StarJedi.woff2"), url("StarJedi.woff2");
-	}
-	@font-face {
-		font-family: "Star Jedi Hollow";
-		src: local("StarJediHollow.woff2"), url("StarJediHollow.woff2");
-	}
-	@font-face {
-		font-family: "Star Jedi Rounded";
-		src: local("StarJediRounded.woff2"), url("StarJediRounded.woff2");
+	:global(body) {
+		background-image: url("pexels-alex-andrews-5086477.webp");
+		background-size: 200%;
 	}
 
 	:global(body, select) {
 		background-color: black;
 		color: white;
 	}
-
-  :global(button) {
-		color: black !important;
-	}
-
 </style>
