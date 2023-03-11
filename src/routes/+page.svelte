@@ -16,63 +16,44 @@
 	let character1;
 	let character2;
 
-	async function createCharacters() {
+	async function createCharacter(inputCharacter, inputName) {
+		if (inputCharacter?.name === inputName) {
+			// already same - skip logic
+			return inputCharacter;
+		}
+
 		removeOldData();
 
-		let result1 = await api.fetchCharacterData(character1Name);
-		let result2 = await api.fetchCharacterData(character2Name);
+		let result = await api.fetchCharacterData(inputName);
 
-		console.log(result1.results[0]);
-		console.log(result2.results[0]);
+		console.log(result.results[0]);
 
-		let image1 = "images/" + result1.results[0].name.replaceAll(" ", "_") + "_placeholder.png";
-		let image2 = "images/" + result2.results[0].name.replaceAll(" ", "_") + "_placeholder.png";
+		let image = "images/" + result.results[0].name.replaceAll(" ", "_") + "_placeholder.png";
 
 		let {
-			name: name1,
-			gender: gender1,
-			height: height1,
-			mass: mass1,
-			hair_color: hairColor1,
-			skin_color: skinColor1,
-			eye_color: eyeColor1,
-			films: movies1,
-		} = result1.results[0];
-		let {
-			name: name2,
-			gender: gender2,
-			height: height2,
-			mass: mass2,
-			hair_color: hairColor2,
-			skin_color: skinColor2,
-			eye_color: eyeColor2,
-			films: movies2,
-		} = result2.results[0];
-		character1 = new Character(
-			name1,
-			gender1,
-			height1,
-			mass1.replaceAll(",", ""),
-			hairColor1,
-			skinColor1,
-			eyeColor1,
-			movies1,
-			image1
+			name,
+			gender,
+			height,
+			mass,
+			hair_color: hairColor,
+			skin_color: skinColor,
+			eye_color: eyeColor,
+			films: movies,
+		} = result.results[0];
+
+		let character = new Character(
+			name,
+			gender,
+			height,
+			mass.replaceAll(",", ""),
+			hairColor,
+			skinColor,
+			eyeColor,
+			movies,
+			image
 		);
-		console.log(character1);
-		character2 = new Character(
-			name2,
-			gender2,
-			height2,
-			// replace commas in mass to nothing
-			mass2.replaceAll(",", ""),
-			hairColor2,
-			skinColor2,
-			eyeColor2,
-			movies2,
-			image2
-		);
-		console.log(character2);
+		console.log(character);
+		return character;
 	}
 	let printCharacterData = false;
 	let showCompareCharactersButton = false;
@@ -185,45 +166,57 @@
 	</div>
 {/if}
 
-	<div>
-		<label for="character1Name">Pick character 1</label>
-		<select
-			class="rounded border"
-			bind:value={character1Name}
-			on:change={(showCompareCharactersButton = false)}
-			name="character1Name"
-			id="character1Name">
-			{#each allCharacters as character}
-				<option value={character}>{character}</option>
-			{/each}
-		</select>
+{#if loadDone}
+	<main class="flex min-h-[1500px] flex-col items-center justify-start [&>*]:m-1">
+		<h1 class="font-starjedihollow pl-6 pt-12 text-8xl text-yellow-300 md:text-9xl">@</h1>
+		<h1 class="font-starjedi py-5 text-xl text-yellow-300 md:py-8 md:text-4xl">
+			the comparisons strike back
+		</h1>
 
-		<label for="character2Name">Pick character 2</label>
-		<select
-			class="rounded border"
-			bind:value={character2Name}
-			on:change={(showCompareCharactersButton = false)}
-			name="character2Name"
-			id="character2Name">
-			{#each allCharacters as character}
-				<option value={character}>{character}</option>
-			{/each}
-		</select>
-	</div>
+		<div class="flex w-full  flex-row justify-around">
+			<div class="flex flex-col">
+				<label for="character1Name">Pick character 1</label>
+				<select
+					class="rounded border"
+					bind:value={character1Name}
+					on:change={(showCompareCharactersButton = false)}
+					name="character1Name"
+					id="character1Name">
+					{#each allCharacters as character}
+						<option value={character}>{character}</option>
+					{/each}
+				</select>
+			</div>
 
-	<button
-		on:click={() => {
-			createCharacters();
-			showCompareCharactersButton = true;
-		}}
-		class="rounded-lg bg-blue-400 p-2">Get data</button>
+			<div class="flex flex-col">
+				<label for="character2Name">Pick character 2</label>
+				<select
+					class="rounded border"
+					bind:value={character2Name}
+					on:change={(showCompareCharactersButton = false)}
+					name="character2Name"
+					id="character2Name">
+					{#each allCharacters as character}
+						<option value={character}>{character}</option>
+					{/each}
+				</select>
+			</div>
+		</div>
 
-	<div class="flex flex-col">
+		<button
+			on:click={async () => {
+				character1 = await createCharacter(character1, character1Name);
+				character2 = await createCharacter(character2, character2Name);
+				showCompareCharactersButton = true;
+			}}
+			class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300"
+			>Get data</button>
+
 		{#if character1 && character2}
 			<div class="items-center">
 				{#if showCompareCharactersButton}
 					<button
-						class="w-32 rounded-lg bg-blue-400 p-2"
+						class="outline-3 outline-solid my-4 w-32 rounded-lg bg-black/70 p-2 text-yellow-400 outline-yellow-400"
 						on:click={() => {
 							comparisonString = "";
 							printCharacterData = true;
@@ -234,32 +227,34 @@
 						}}>Compare characters</button>
 				{/if}
 			</div>
-			<div class="flex flex-row justify-between ">
+		{/if}
+
+		{#if character1 && character2}
+			<div class="flex flex-row gap-2">
 				{#each [character1, character2] as character, i}
-					<article>
-						<div class="flex-col items-center">
-							<h2 class="text-2xl">
-								{character.name ?? "empty"}
-							</h2>
-							<img class="w-[50%]" src="{base}/{character.pictureURL}" alt="a" />
-							{#if printCharacterData}
-								<div class="my-2 w-[50%] rounded-lg border-2 border-solid border-pink-500 p-2">
-									{#each Object.entries(character) as [key, value]}
-										{#if key !== "movies" && key !== "pictureURL"}
-											{#if key === "height"}
-												<p id="{key}_{i}">{caps(key)}: {value}cm</p>
-											{:else if key === "mass"}
-												<p id="{key}_{i}">{caps(key)}: {value}kg</p>
-											{:else}
-												<p id="{key}_{i}">{caps(key)}: {value}</p>
-											{/if}
-										{:else if key === "movies"}
-											<p id="movies_{i}">Stars in {value.length} movies</p>
+					<article class="flex flex-col items-center">
+						<h2 class="text-xl md:text-2xl">
+							{character.name ?? "empty"}
+						</h2>
+						<img class="" src="{base}/{character.pictureURL}" alt="a" />
+						{#if printCharacterData}
+							<div
+								class="my-2 w-full rounded-lg border-2 border-solid border-yellow-500 bg-black/70 p-2">
+								{#each Object.entries(character) as [key, value]}
+									{#if key !== "movies" && key !== "pictureURL"}
+										{#if key === "height"}
+											<p id="{key}_{i}">{caps(key)}: {value}cm</p>
+										{:else if key === "mass"}
+											<p id="{key}_{i}">{caps(key)}: {value}kg</p>
+										{:else}
+											<p id="{key}_{i}">{caps(key)}: {value}</p>
 										{/if}
-									{/each}
-								</div>
-							{/if}
-						</div>
+									{:else if key === "movies"}
+										<p id="movies_{i}">Stars in {value.length} movies</p>
+									{/if}
+								{/each}
+							</div>
+						{/if}
 						<div class="flex-row items-center [&>*]:m-2">
 							<button
 								on:click={async () => {
@@ -277,7 +272,8 @@
 			</div>
 
 			{#if comparisonString && printCharacterData}
-				<aside class="my-4 flex items-center rounded-lg border-2 border-solid border-pink-500 p-2">
+				<aside
+					class="my-4 mb-12 flex items-center rounded-lg border-2 border-solid border-yellow-500 bg-black/70 p-2">
 					<ul>
 						{#each comparisonString.split("^") as li}
 							<li>
@@ -288,18 +284,18 @@
 				</aside>
 			{/if}
 		{/if}
-	</div>
-</main>
+	</main>
 
-<footer class="fixed right-0 bottom-0 m-4">
-	<p>
-		by
-		<a
-			class="underline-blue-600 underline hover:text-blue-600"
-			href="https://github.com/henrikvilhelmberglund"
-			><img class="inline w-6" src="{base}/Henrik.png" alt="avatar" />henrikvilhelmberglund</a>
-	</p>
-</footer>
+	<footer class="fixed right-0 bottom-0 z-[-100] m-4">
+		<p>
+			by
+			<a
+				class=" underline-blue-600 underline hover:text-blue-600"
+				href="https://github.com/henrikvilhelmberglund"
+				><img class="inline w-6" src="{base}/Henrik.png" alt="avatar" />henrikvilhelmberglund</a>
+		</p>
+	</footer>
+{/if}
 
 <style>
 	@font-face {
