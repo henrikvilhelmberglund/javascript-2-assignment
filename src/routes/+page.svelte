@@ -26,6 +26,7 @@
 
 	let starredInSameMovies;
 	let planets;
+	let mostExpensiveVehicles = [0, 0];
 
 	let isLoading = {};
 
@@ -87,8 +88,8 @@
 		printCharacterData = false;
 		showCompareCharactersButton = true;
 		firstAppearance = [false, false];
-    starredInSameMovies = [];
-    planets = [];
+		starredInSameMovies = [];
+		planets = [];
 	}
 
 	function caps(string) {
@@ -319,7 +320,7 @@
 
 					<!-- Character method buttons -->
 					{#if character}
-						<div class="flex-row items-center [&>*]:m-2">
+						<div class="flex-row items-center flex-wrap [&>*]:m-2">
 							<button
 								on:click={async () => {
 									firstAppearance[i] = await character.returnFirstAppearance(character.movies);
@@ -360,6 +361,21 @@
 									isLoading["planets"] = false;
 									console.log(planets);
 								}}>Show planets</button>
+							<button
+								on:click={async () => {
+									isLoading[`vehicles_${i}`] = true;
+
+									mostExpensiveVehicles[i] = await character.returnMostExpensiveVehicles([
+										character.name,
+									]);
+
+									// planets = planetsAreSame
+									// 	? `${character1.name} and ${character2.name} are both from ${planets[0]}.`
+									// 	: `${character1.name} is from ${planets[0]} and ${character2.name} is from ${planets[1]}.`;
+
+									isLoading[`vehicles_${i}`] = false;
+									console.log(mostExpensiveVehicles);
+								}}>Show most expensive vehicles</button>
 						</div>
 					{/if}
 				</article>
@@ -386,6 +402,22 @@
 			{:else if planets && typeof planets === "string"}
 				<p>
 					{planets}
+				</p>
+			{/if}
+			{#if isLoading[`vehicles_0`]}
+				<p>Loading vehicles...</p>
+			{:else if mostExpensiveVehicles[0] && typeof mostExpensiveVehicles[0] === "object"}
+				<p>
+					{character1.name}'s most expensive vehicle is a {mostExpensiveVehicles[0][0].name} with a value
+					of {mostExpensiveVehicles[0][0].cost_in_credits}.
+				</p>
+			{/if}
+			{#if isLoading["vehicles_1"]}
+				<p>Loading vehicles...</p>
+			{:else if mostExpensiveVehicles[1] && typeof mostExpensiveVehicles[1] === "object"}
+				<p>
+					{character2.name}'s most expensive vehicle is a {mostExpensiveVehicles[1][0].name} with a value
+					of {mostExpensiveVehicles[1][0].cost_in_credits} credits.
 				</p>
 			{/if}
 		</div>
