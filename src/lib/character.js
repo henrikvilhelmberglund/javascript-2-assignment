@@ -34,6 +34,35 @@ export class Character {
 		// console.log(firstAppearance);
 		return firstAppearance;
 	}
+
+	/**
+	 * ## Function description
+	 * @param {Array<string>} movies1 - An array of character1's movies.
+	 * @param {Array<string>} movies2 - An array of character2's movies.
+	 * @returns {Array<string>} An array of the movies which are the same.
+	 */
+	returnSameMoviesArray(movies1, movies2) {
+		let same = movies1.filter((movie) => movies2.includes(movie));
+
+		return same;
+	}
+
+	async returnNameOfSameMovies(movies) {
+		let promises = movies.map((movie) => fetchSpecifics(movie));
+		let nameOfSameMovies = await Promise.allSettled(promises);
+		nameOfSameMovies = nameOfSameMovies.map((movie) => movie.value.title);
+		console.log(nameOfSameMovies);
+
+		// old silly version
+		// let allMovies = [];
+		// for (const movie of movies) {
+		// 	let currentMovie = await fetchSpecifics(movie);
+		// 	allMovies.push(currentMovie.release_date);
+		// 	console.log(currentMovie.release_date);
+		// }
+		// console.log(firstAppearance);
+		return nameOfSameMovies;
+	}
 }
 
 export const allCharacters = [
