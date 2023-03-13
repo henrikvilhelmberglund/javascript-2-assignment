@@ -166,9 +166,9 @@
 </script>
 
 <svelte:head>
-	<link rel="preload" href="StarJedi.woff2" as="font" type="font/woff2" crossorigin />
-	<link rel="preload" href="StarJediHollow.woff2" as="font" type="font/woff2" crossorigin />
-	<link rel="preload" href="StarJediRounded.woff2" as="font" type="font/woff2" crossorigin />
+	<link rel="preload" href="{base}/StarJedi.woff2" as="font" type="font/woff2" crossorigin />
+	<link rel="preload" href="{base}/StarJediHollow.woff2" as="font" type="font/woff2" crossorigin />
+	<link rel="preload" href="{base}/StarJediRounded.woff2" as="font" type="font/woff2" crossorigin />
 </svelte:head>
 
 <!-- Loading spinner -->
@@ -320,7 +320,7 @@
 
 					<!-- Character method buttons -->
 					{#if character}
-						<div class="flex-row items-center flex-wrap [&>*]:m-2">
+						<div class="flex-row flex-wrap items-center [&>*]:m-2">
 							<button
 								on:click={async () => {
 									firstAppearance[i] = await character.returnFirstAppearance(character.movies);
@@ -452,16 +452,16 @@
 <style>
 	@font-face {
 		font-family: "Star Jedi";
-		src: local("StarJedi.woff2"), url("StarJedi.woff2");
+		src: local("/StarJedi.woff2"), url("/StarJedi.woff2");
 	}
 	@font-face {
 		font-family: "Star Jedi Hollow";
-		src: local("StarJediHollow.woff2"), url("StarJediHollow.woff2");
+		src: local("/StarJediHollow.woff2"), url("/StarJediHollow.woff2");
 		font-display: block;
 	}
 	@font-face {
 		font-family: "Star Jedi Rounded";
-		src: local("StarJediRounded.woff2"), url("StarJediRounded.woff2");
+		src: local("/StarJediRounded.woff2"), url("/StarJediRounded.woff2");
 	}
 	:global(.green) {
 		transition: all 300ms;
@@ -474,7 +474,7 @@
 	}
 
 	:global(body) {
-		background-image: url("pexels-alex-andrews-5086477.webp");
+		background-image: url("/pexels-alex-andrews-5086477.webp");
 		background-size: 200%;
 	}
 
