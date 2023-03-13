@@ -1,4 +1,4 @@
-import { fetchSpecifics } from "./api";
+import { fetchCharacterData, fetchSpecifics } from "./api";
 export class Character {
 	constructor(name, gender, height, mass, hairColor, skinColor, eyeColor, movies, pictureURL) {
 		this.name = name;
@@ -62,6 +62,18 @@ export class Character {
 		// }
 		// console.log(firstAppearance);
 		return nameOfSameMovies;
+	}
+
+	async returnNameOfPlanets(characterNames) {
+		let characterPromises = characterNames.map((character) => fetchCharacterData(character));
+		let characterData = await Promise.allSettled(characterPromises);
+		characterData = characterData.map((character) => character.value.results[0]);
+
+		let promises = characterData.map((character) => fetchSpecifics(character.homeworld));
+		let nameOfPlanets = await Promise.allSettled(promises);
+		nameOfPlanets = nameOfPlanets.map((planet) => planet.value.name);
+		console.log(nameOfPlanets);
+		return nameOfPlanets;
 	}
 }
 
