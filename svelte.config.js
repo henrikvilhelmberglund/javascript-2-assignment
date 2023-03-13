@@ -1,6 +1,7 @@
 // use adapter-auto for zero config deployment to Vercel, adapter-static for Github Pages
 // import adapter from '@sveltejs/adapter-auto';
 import adapter from "@sveltejs/adapter-static";
+import { vitePreprocess } from "@sveltejs/kit/vite";
 
 const dev = process.argv.includes("dev");
 
@@ -18,6 +19,7 @@ const config = {
 			inspector: true,
 		},
 	},
+	preprocess: [vitePreprocess()],
 };
 
 export default config;
