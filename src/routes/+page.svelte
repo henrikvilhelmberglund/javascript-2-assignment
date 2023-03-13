@@ -285,6 +285,8 @@
 							{character.name}
 						</h2>
 						<img class="" src="{base}/{character.pictureURL}" alt="a" />
+					{:else if !character && i === 0}
+						<h2 class="text-xl md:text-2xl">Pick your characters</h2>
 					{/if}
 					{#if printCharacterData}
 						<div
