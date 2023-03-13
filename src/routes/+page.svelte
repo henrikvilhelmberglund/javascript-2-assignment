@@ -23,7 +23,9 @@
 	let printCharacterData = false;
 	let showCompareCharactersButton = false;
 	let firstAppearance = [false, false];
+
 	let starredInSameMovies;
+	let planets;
 
 	let isLoading = {};
 
@@ -81,9 +83,12 @@
 	}
 
 	function removeOldData() {
+		console.log("remove old data called");
 		printCharacterData = false;
 		showCompareCharactersButton = true;
 		firstAppearance = [false, false];
+    starredInSameMovies = [];
+    planets = [];
 	}
 
 	function caps(string) {
@@ -189,7 +194,7 @@
 {/if}
 
 {#if loadDone}
-	<main class="flex flex-col items-center justify-start pb-24 [&>*]:m-1 [&>*]:z-100">
+	<main class="[&>*]:z-100 flex flex-col items-center justify-start pb-24 [&>*]:m-1">
 		<h1 class="font-starjedihollow pl-6 pt-12 text-8xl text-yellow-300 md:text-9xl">@</h1>
 		<h1 class="font-starjedi py-5 text-xl text-yellow-300 md:py-8 md:text-4xl">
 			the comparisons strike back
@@ -229,6 +234,7 @@
 		<!-- getDataButton -->
 		<button
 			on:click={async () => {
+				removeOldData();
 				character1Loading = true;
 				character2Loading = true;
 				// character1 = await createCharacter(character1, character1Name, character1LoadPromise);
@@ -337,6 +343,23 @@
 									isLoading["sameMovies"] = false;
 									console.log(starredInSameMovies);
 								}}>Show same movies</button>
+							<button
+								on:click={async () => {
+									isLoading["planets"] = true;
+
+									planets = await character.returnNameOfPlanets([character1.name, character2.name]);
+									let planetsAreSame;
+									if (planets[0] === planets[1]) {
+										planetsAreSame = true;
+									}
+
+									planets = planetsAreSame
+										? `${character1.name} and ${character2.name} are both from ${planets[0]}.`
+										: `${character1.name} is from ${planets[0]} and ${character2.name} is from ${planets[1]}.`;
+
+									isLoading["planets"] = false;
+									console.log(planets);
+								}}>Show planets</button>
 						</div>
 					{/if}
 				</article>
@@ -352,10 +375,17 @@
 				<p>{character2.name} first appeared on film in {firstAppearance[1]}.</p>
 			{/if}
 			{#if isLoading["sameMovies"]}
-      <p>Loading movies...</p>
-      {:else if starredInSameMovies && typeof starredInSameMovies === "string"}
+				<p>Loading movies...</p>
+			{:else if starredInSameMovies && typeof starredInSameMovies === "string"}
 				<p>
 					{character1.name} and {character2.name} both starred in {starredInSameMovies}.
+				</p>
+			{/if}
+			{#if isLoading["planets"]}
+				<p>Loading planets...</p>
+			{:else if planets && typeof planets === "string"}
+				<p>
+					{planets}
 				</p>
 			{/if}
 		</div>
