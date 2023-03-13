@@ -15,10 +15,17 @@
 
 	let character1;
 	let character2;
-
 	let character1Loading;
+
 	let character2Loading;
 	let result;
+
+	let printCharacterData = false;
+	let showCompareCharactersButton = false;
+	let firstAppearance = [false, false];
+	let starredInSameMovies;
+
+	let isLoading = {};
 
 	async function createCharacter(inputCharacter, inputName, inputNum) {
 		if (inputCharacter?.name === inputName) {
@@ -72,9 +79,6 @@
 		}
 		return result;
 	}
-	let printCharacterData = false;
-	let showCompareCharactersButton = false;
-	let firstAppearance = [false, false];
 
 	function removeOldData() {
 		printCharacterData = false;
@@ -185,7 +189,7 @@
 {/if}
 
 {#if loadDone}
-	<main class="flex flex-col items-center justify-start [&>*]:m-1">
+	<main class="flex flex-col items-center justify-start pb-24 [&>*]:m-1 [&>*]:z-100">
 		<h1 class="font-starjedihollow pl-6 pt-12 text-8xl text-yellow-300 md:text-9xl">@</h1>
 		<h1 class="font-starjedi py-5 text-xl text-yellow-300 md:py-8 md:text-4xl">
 			the comparisons strike back
@@ -277,7 +281,7 @@
 
 		<!-- Character display -->
 		<!-- {#if character1 && character2} -->
-		<div class="flex min-h-[90vh] flex-row gap-2">
+		<div class="flex flex-row gap-2">
 			{#each [character1, character2] as character, i}
 				<article class="flex flex-col items-center">
 					{#if character}
@@ -314,16 +318,46 @@
 								on:click={async () => {
 									firstAppearance[i] = await character.returnFirstAppearance(character.movies);
 								}}>Show first appearance</button>
-							<button>More buttons</button>
-						</div>
-						<div class="flex-col">
-							{#if firstAppearance[i]}
-								<p>{character.name} first appeared on film in {firstAppearance[i]}.</p>
-							{/if}
+							<button
+								on:click={async () => {
+									isLoading["sameMovies"] = true;
+									starredInSameMovies = character.returnSameMoviesArray(
+										character1.movies,
+										character2.movies
+									);
+									starredInSameMovies = await character.returnNameOfSameMovies(starredInSameMovies);
+									starredInSameMovies = starredInSameMovies.join(", ");
+									let index = starredInSameMovies.lastIndexOf(", ");
+									starredInSameMovies =
+										index !== -1
+											? starredInSameMovies.substring(0, index) +
+											  " and" +
+											  starredInSameMovies.substring(index + 1)
+											: starredInSameMovies;
+									isLoading["sameMovies"] = false;
+									console.log(starredInSameMovies);
+								}}>Show same movies</button>
 						</div>
 					{/if}
 				</article>
 			{/each}
+		</div>
+
+		<!-- DOM info box -->
+		<div class="flex-col">
+			{#if firstAppearance[0]}
+				<p>{character1.name} first appeared on film in {firstAppearance[0]}.</p>
+			{/if}
+			{#if firstAppearance[1]}
+				<p>{character2.name} first appeared on film in {firstAppearance[1]}.</p>
+			{/if}
+			{#if isLoading["sameMovies"]}
+      <p>Loading movies...</p>
+      {:else if starredInSameMovies && typeof starredInSameMovies === "string"}
+				<p>
+					{character1.name} and {character2.name} both starred in {starredInSameMovies}.
+				</p>
+			{/if}
 		</div>
 
 		<!-- Comparison -->
@@ -342,7 +376,7 @@
 		<!-- {/if} -->
 	</main>
 
-	<footer class="fixed right-0 bottom-0 z-[-100] m-4">
+	<footer class="fixed right-0 bottom-0 m-4">
 		<p>
 			by
 			<a
