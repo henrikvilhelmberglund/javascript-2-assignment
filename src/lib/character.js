@@ -14,12 +14,18 @@ export class Character {
 	}
 
 	async returnFirstAppearance(movies) {
-		let allMovies = [];
-		for (const movie of movies) {
-			let currentMovie = await fetchSpecifics(movie);
-			allMovies.push(currentMovie.release_date);
-			// console.log(currentMovie.release_date);
-		}
+		let promises = movies.map((movie) => fetchSpecifics(movie));
+		let allMovies = await Promise.allSettled(promises);
+		allMovies = allMovies.map((movie) => movie.value.release_date);
+		console.log(allMovies);
+
+		// old silly version
+		// let allMovies = [];
+		// for (const movie of movies) {
+		// 	let currentMovie = await fetchSpecifics(movie);
+		// 	allMovies.push(currentMovie.release_date);
+		// 	console.log(currentMovie.release_date);
+		// }
 
 		allMovies.sort((a, b) => {
 			return new Date(b.date) - new Date(a.date);
