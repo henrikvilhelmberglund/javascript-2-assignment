@@ -2,6 +2,35 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [0.0.2](https://github.com/henrikvilhelmberglund/javascript-2-assignment/compare/v0.0.1...v0.0.2) (2023-03-13)
+
+
+### Features
+
+* :sparkles: add vite preprocess ([1276b3b](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/1276b3bae2b18fb033a1ebb1e6d05c1ccb207845))
+* :sparkles: add character method and function to display the most expensive vehicle ([#14](https://github.com/henrikvilhelmberglund/javascript-2-assignment/issues/14)) ([f76f7f2](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/f76f7f22ea6b649b8e94ccf5310297f18f60636e))
+* :sparkles: add method to get planet data, function for DOM output ([#13](https://github.com/henrikvilhelmberglund/javascript-2-assignment/issues/13)) ([8998e6b](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/8998e6b3e03f767e3be134bdde525135efe52785))
+* :sparkles: add method for getting same movie data and function to output that into the DOM ([#12](https://github.com/henrikvilhelmberglund/javascript-2-assignment/issues/12)) ([1084494](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/1084494a48be25ab08098e7bc4fea18df7d299ad))
+* :bento: add nicer pictures ([#11](https://github.com/henrikvilhelmberglund/javascript-2-assignment/issues/11)) ([1682362](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/168236277eb92a74e563922a23e357448457be4d))
+* :sparkles: add pick your characters text ([5a37ebe](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/5a37ebec354d264e5920754cee61f689ab7a35ab))
+* :sparkles: add Loading... thingy for character creation, show error when offline/failed to fetch ([3d7174f](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/3d7174f41e79c03a4685db11d7220c3071db045a))
+* :zap: make createCharacters into createCharacter, add more styling ([a41e99b](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/a41e99bced98c9d70bc89080e36b1bf83a2e9390))
+* :lipstick: add styling and font preloading with block ([07e7975](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/07e797513f7dd9c239a47ba371f24905617e6b1f))
+* :sparkles: add loading spinner ([acd532a](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/acd532a812dfd92597023f395ca27db6e2e32e64))
+* :bento: add beautiful(?) background image ([f9802b0](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/f9802b08bcddbc349f36d9e3f3a2c6e9c3b39c45))
+* :lipstick: add fonts, styling ([fc2713f](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/fc2713f8e24b39ae3eccb697f5faa17effa230a8))
+* :sparkles: add web fonts config and fonts ([27a1099](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/27a1099dc203f9d7f92388fe47b882112f60bf86))
+* :package: add presetWebFonts for unocss ([500bfe0](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/500bfe01a488594da58b0746bf3ae536e0cf15a1))
+
+
+### Bug Fixes
+
+* :bug: fix asset links ([75058cb](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/75058cb59b692de42f90e27a371c3148d52b7a93))
+* :zap: optimize returnFirstAppearance() ([1e31c94](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/1e31c9418d4212f1207c4f758358ffd9f6f5b119))
+* :bug: reject error (maybe) ([3bfd44b](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/3bfd44b9e579442c15f52279efbec69406dcf02b))
+* :bug: add empty unocss.config.js to make extension work ([98c5591](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/98c55917df71ae890cc24a5158e4b5cfca325161))
+* :ambulance: add missing {base} before image links ([f09527e](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/f09527ef8a1daf8dd7a5f32b191f9d05f260c737))
+
 ## 0.0.1 (2023-03-10)
 
 
