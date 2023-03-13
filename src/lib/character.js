@@ -75,6 +75,30 @@ export class Character {
 		console.log(nameOfPlanets);
 		return nameOfPlanets;
 	}
+
+	async returnMostExpensiveVehicles(characterNames) {
+		let characterPromises = characterNames.map((character) => fetchCharacterData(character));
+		let characterData = await Promise.allSettled(characterPromises);
+		characterData = characterData.map((character) => character.value.results[0]);
+
+		let vehiclePromises = characterData.flatMap((character) =>
+			character.vehicles.map((vehicle) => fetchSpecifics(vehicle))
+		);
+		let starshipPromises = characterData.flatMap((character) =>
+			character.starships.map((starship) => fetchSpecifics(starship))
+		);
+		let totalVehicles = await Promise.allSettled([...vehiclePromises, ...starshipPromises]);
+
+		let maximumPrice = totalVehicles
+			.filter(
+				(result) => result.status === "fulfilled" && result.value.cost_in_credits !== "unknown"
+			)
+			.map((result) => result.value)
+			.sort((a, b) => b.cost_in_credits - a.cost_in_credits);
+		// nameOfPlanets = nameOfPlanets.map((planet) => planet.value.name);
+		console.log(maximumPrice);
+		return maximumPrice;
+	}
 }
 
 export const allCharacters = [

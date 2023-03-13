@@ -4,7 +4,7 @@ export async function fetchCharacterData(name) {
 			method: "GET",
 		});
 		let data = await response.json();
-		console.log(data);
+		// console.log(data);
 		return data;
 	} catch (error) {
 		return Promise.reject(error);
@@ -17,7 +17,7 @@ export async function fetchSpecifics(link) {
 			method: "GET",
 		});
 		let data = await response.json();
-		console.log(data);
+		// console.log(data);
 		return data;
 	} catch (error) {
 		return error;
