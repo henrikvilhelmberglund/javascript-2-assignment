@@ -36,7 +36,7 @@
 
 		console.log(result.results[0]);
 
-		let image = "images/" + result.results[0].name.replaceAll(" ", "_") + "_placeholder.png";
+		let image = "images/" + result.results[0].name.replaceAll(" ", "_") + ".png";
 
 		let {
 			name,
