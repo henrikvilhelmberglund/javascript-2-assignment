@@ -1,3 +1,9 @@
+
+/**
+ * 
+ * @param {string} name 
+ * @returns 
+ */
 export async function fetchCharacterData(name) {
 	try {
 		let response = await fetch(`https://swapi.dev/api/people/?search=${name}`, {
@@ -11,6 +17,11 @@ export async function fetchCharacterData(name) {
 	}
 }
 
+/**
+ * 
+ * @param {string} link 
+ * @returns 
+ */
 export async function fetchSpecifics(link) {
 	try {
 		let response = await fetch(link, {
