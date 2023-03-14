@@ -475,7 +475,7 @@
 
 	:global(body) {
 		background-image: url("/pexels-alex-andrews-5086477.webp");
-		background-size: 200%;
+		background-size: 400%;
 	}
 
 	:global(body, select) {
