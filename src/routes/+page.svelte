@@ -11,15 +11,13 @@
 	});
 
 	let characterName = [,];
+	let characterArray = [,];
+	let characterLoading = [,];
 
-	let character1;
-	let character2;
-	let character1Loading;
-
-	let character2Loading;
 	let result;
 
 	let printCharacterData = false;
+	let printExtraData = false;
 	let showCompareCharactersButton = false;
 	let firstAppearance = [false, false];
 
@@ -70,25 +68,24 @@
 			image
 		);
 
-		// warning, stupid code
-		if (inputNum === 1) {
-			character1 = character;
-			character1Loading = false;
+		if (inputNum === 0) {
+			characterArray[0] = character;
+			characterLoading[0] = false;
 		}
-		if (inputNum === 2) {
-			character2 = character;
-			character2Loading = false;
+		if (inputNum === 1) {
+			characterArray[1] = character;
+			characterLoading[1] = false;
 		}
 		return result;
 	}
 
 	function removeOldData() {
-		console.log("remove old data called");
 		printCharacterData = false;
 		showCompareCharactersButton = true;
 		firstAppearance = [false, false];
 		starredInSameMovies = [];
 		planets = [];
+		mostExpensiveVehicles = [0, 0];
 	}
 
 	function caps(string) {
@@ -103,22 +100,22 @@
 	let comparisonString = "";
 
 	function changeTextColor() {
-		for (const [key, value] of Object.entries(character1)) {
+		for (const [key, value] of Object.entries(characterArray[0])) {
+			let element1 = document.querySelector(`#${key}_0`);
+			let element2 = document.querySelector(`#${key}_1`);
 			if (typeof value === "number") {
-				let element1 = document.querySelector(`#${key}_0`);
-				let element2 = document.querySelector(`#${key}_1`);
-				if (value > character2[key]) {
+				if (value > characterArray[1][key]) {
 					element1.className = "green";
 					element2.className = "red";
-					comparisonString += `${character1.name}'s ${key} is greater than ${character2.name}'s.^`;
-				} else if (value < character2[key]) {
+					comparisonString += `${characterArray[0].name}'s ${key} is greater than ${characterArray[1].name}'s.^`;
+				} else if (value < characterArray[1][key]) {
 					element2.className = "green";
 					element1.className = "red";
-					comparisonString += `${character2.name}'s ${key} is greater than ${character1.name}'s.^`;
+					comparisonString += `${characterArray[1].name}'s ${key} is greater than ${characterArray[0].name}'s.^`;
 				} else {
 					element1.className = "green";
 					element2.className = "green";
-					comparisonString += `${character1.name} and ${character2.name} have the same ${key}.^`;
+					comparisonString += `${characterArray[0].name} and ${characterArray[1].name} have the same ${key}.^`;
 				}
 			} else if (
 				key === "name" ||
@@ -129,37 +126,32 @@
 			) {
 				// not sure if eyeColor omission was on purpose or not, my guess is not, so I added it here
 				// also added name because why not
-				let element1 = document.querySelector(`#${key}_0`);
-				let element2 = document.querySelector(`#${key}_1`);
-				if (value === character2[key]) {
+				if (value === characterArray[1][key]) {
 					element1.className = "green";
 					element2.className = "green";
 					if (key.includes("Color")) {
-						comparisonString += `${character1.name} and ${character2.name} have the same ${
-							key.split("Color")[0]
-						} color.^`;
+						comparisonString += `${characterArray[0].name} and ${
+							characterArray[1].name
+						} have the same ${key.split("Color")[0]} color.^`;
 					} else {
-						comparisonString += `${character1.name} and ${character2.name} are both ${value}.^`;
+						comparisonString += `${characterArray[0].name} and ${characterArray[1].name} are both ${value}.^`;
 					}
 				}
 			} else if (key === "movies") {
-				let element1 = document.querySelector(`#${key}_0`);
-				let element2 = document.querySelector(`#${key}_1`);
-				if (value.length > character2[key].length) {
+				if (value.length > characterArray[1][key].length) {
 					element1.className = "green";
 					element2.className = "red";
-					comparisonString += `^${character1.name} has starred in more movies than ${character2.name}.^`;
-				} else if (value.length < character2[key].length) {
+					comparisonString += `^${characterArray[0].name} has starred in more movies than ${characterArray[1].name}.^`;
+				} else if (value.length < characterArray[1][key].length) {
 					element2.className = "green";
 					element1.className = "red";
-					comparisonString += `^${character2.name} has starred in more movies than ${character1.name}.^`;
+					comparisonString += `^${characterArray[1].name} has starred in more movies than ${characterArray[0].name}.^`;
 				} else {
 					element1.className = "green";
 					element2.className = "green";
-					comparisonString += `^${character1.name} and ${character2.name} have starred in the same number of movies.^`;
+					comparisonString += `^${characterArray[0].name} and ${characterArray[1].name} have starred in the same number of movies.^`;
 				}
 			}
-			// console.log("key: " + key, "value:" + value);
 		}
 	}
 </script>
@@ -223,15 +215,15 @@
 		<button
 			on:click={async () => {
 				removeOldData();
-				character1Loading = true;
-				character2Loading = true;
+				characterLoading[0] = true;
+				characterLoading[1] = true;
 				showCompareCharactersButton = true;
 			}}
 			class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 			>Get data</button>
 
 		<!-- showCompareCharactersButton -->
-		{#if character1 && character2}
+		{#if characterArray[0] && characterArray[1]}
 			<div class="items-center">
 				{#if showCompareCharactersButton}
 					<button
@@ -250,31 +242,23 @@
 
 		<!-- Loading thingy for promises -->
 		<div class="flex w-[100vw] flex-row justify-around">
-			{#if character1Loading}
-				<div class="relative">
-					{#await createCharacter(character1, characterName[0], 1)}
-						<p class="absolute left-0 top-0">Loading...</p>
-					{:catch error}
-						<p class="absolute left-0 top-0">Couldn't load data :(</p>
-					{/await}
-				</div>
-			{/if}
-
-			{#if character2Loading}
-				<div class="relative">
-					{#await createCharacter(character2, characterName[1], 2)}
-						<p class="absolute left-0 top-0">Loading...</p>
-					{:catch error}
-						<p class="absolute left-0 top-0">Couldn't load data :(</p>
-					{/await}
-				</div>
-			{/if}
+			{#each Array(2) as _, i}
+				{#if characterLoading[i]}
+					<div class="relative">
+						{#await createCharacter(characterArray[i], characterName[i], i)}
+							<p class="absolute left-0 top-0">Loading...</p>
+						{:catch error}
+							<p class="absolute left-0 top-0">Couldn't load data :(</p>
+						{/await}
+					</div>
+				{/if}
+			{/each}
 		</div>
 
 		<!-- Character display -->
 		<!-- {#if character1 && character2} -->
 		<div class="flex flex-row gap-2">
-			{#each [character1, character2] as character, i}
+			{#each characterArray as character, i}
 				<article class="flex flex-col items-center gap-2">
 					{#if character}
 						<h2 class="text-xl md:text-2xl">
@@ -309,15 +293,19 @@
 							<button
 								class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 								on:click={async () => {
+									printExtraData = true;
+									isLoading[`firstAppearance_${i}`] = true;
 									firstAppearance[i] = await character.returnFirstAppearance(character.movies);
+									isLoading[`firstAppearance_${i}`] = false;
 								}}>Show first appearance</button>
 							<button
 								class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 								on:click={async () => {
+									printExtraData = true;
 									isLoading["sameMovies"] = true;
 									starredInSameMovies = character.returnSameMoviesArray(
-										character1.movies,
-										character2.movies
+										characterArray[0].movies,
+										characterArray[1].movies
 									);
 									starredInSameMovies = await character.returnNameOfSameMovies(starredInSameMovies);
 									starredInSameMovies = starredInSameMovies.join(", ");
@@ -334,17 +322,20 @@
 							<button
 								class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 								on:click={async () => {
+									printExtraData = true;
 									isLoading["planets"] = true;
-
-									planets = await character.returnNameOfPlanets([character1.name, character2.name]);
+									planets = await character.returnNameOfPlanets([
+										characterArray[0].name,
+										characterArray[1].name,
+									]);
 									let planetsAreSame;
 									if (planets[0] === planets[1]) {
 										planetsAreSame = true;
 									}
 
 									planets = planetsAreSame
-										? `${character1.name} and ${character2.name} are both from ${planets[0]}.`
-										: `${character1.name} is from ${planets[0]} and ${character2.name} is from ${planets[1]}.`;
+										? `${characterArray[0].name} and ${characterArray[1].name} are both from ${planets[0]}.`
+										: `${characterArray[0].name} is from ${planets[0]} and ${characterArray[1].name} is from ${planets[1]}.`;
 
 									isLoading["planets"] = false;
 									console.log(planets);
@@ -352,6 +343,7 @@
 							<button
 								class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 								on:click={async () => {
+									printExtraData = true;
 									isLoading[`vehicles_${i}`] = true;
 
 									mostExpensiveVehicles[i] = await character.returnMostExpensiveVehicles([
@@ -372,56 +364,48 @@
 		</div>
 
 		<!-- DOM info box -->
-		<div class="flex-col">
-			{#if firstAppearance[0]}
-				<p>{character1.name} first appeared on film in {firstAppearance[0]}.</p>
-			{/if}
-			{#if firstAppearance[1]}
-				<p>{character2.name} first appeared on film in {firstAppearance[1]}.</p>
-			{/if}
-			{#if isLoading["sameMovies"]}
-				<p>Loading movies...</p>
-			{:else if starredInSameMovies && typeof starredInSameMovies === "string"}
-				<p>
-					{character1.name} and {character2.name} both starred in {starredInSameMovies}.
-				</p>
-			{/if}
-			{#if isLoading["planets"]}
-				<p>Loading planets...</p>
-			{:else if planets && typeof planets === "string"}
-				<p>
-					{planets}
-				</p>
-			{/if}
-			{#if isLoading[`vehicles_0`]}
-				<p>Loading vehicles...</p>
-			{:else if mostExpensiveVehicles[0] && typeof mostExpensiveVehicles[0] === "object"}
-				{#if mostExpensiveVehicles[0].length > 0}
+		{#if printExtraData}
+			<div
+				class="flex-col flex-col rounded bg-slate-200 p-2 text-black outline-double outline-4 outline-blue-300">
+				{#each Array(2) as _, i}
+					{#if isLoading[`firstAppearance_${i}`]}
+						<p>Loading first appearance...</p>
+					{:else if firstAppearance[i]}
+						<p>{characterArray[i].name} first appeared on film in {firstAppearance[i]}.</p>
+					{/if}
+				{/each}
+				{#if isLoading["sameMovies"]}
+					<p>Loading movies...</p>
+				{:else if starredInSameMovies && typeof starredInSameMovies === "string"}
 					<p>
-						{character1.name}'s most expensive vehicle is a {mostExpensiveVehicles[0][0].name} with a
-						value of {mostExpensiveVehicles[0][0].cost_in_credits}.
-					</p>
-				{:else}
-					<p>
-						{character1.name} does not own any vehicles.
+						{characterArray[0].name} and {characterArray[1].name} both starred in {starredInSameMovies}.
 					</p>
 				{/if}
-			{/if}
-			{#if isLoading["vehicles_1"]}
-				<p>Loading vehicles...</p>
-			{:else if mostExpensiveVehicles[1] && typeof mostExpensiveVehicles[1] === "object"}
-				{#if mostExpensiveVehicles[1].length > 0}
+				{#if isLoading["planets"]}
+					<p>Loading planets...</p>
+				{:else if planets && typeof planets === "string"}
 					<p>
-						{character2.name}'s most expensive vehicle is a {mostExpensiveVehicles[1][0].name} with a
-						value of {mostExpensiveVehicles[1][0].cost_in_credits} credits.
-					</p>
-				{:else}
-					<p>
-						{character2.name} does not own any vehicles.
+						{planets}
 					</p>
 				{/if}
-			{/if}
-		</div>
+				{#each Array(2) as _, i}
+					{#if isLoading[`vehicles_${i}`]}
+						<p>Loading vehicles...</p>
+					{:else if mostExpensiveVehicles[i] && typeof mostExpensiveVehicles[i] === "object"}
+						{#if mostExpensiveVehicles[i].length > 0}
+							<p>
+								{characterArray[i].name}'s most expensive vehicle is a {mostExpensiveVehicles[i][0]
+									.name} with a value of {mostExpensiveVehicles[i][0].cost_in_credits}.
+							</p>
+						{:else}
+							<p>
+								{characterArray[i].name} does not own any vehicles.
+							</p>
+						{/if}
+					{/if}
+				{/each}
+			</div>
+		{/if}
 
 		<!-- Comparison -->
 		{#if comparisonString && printCharacterData}
