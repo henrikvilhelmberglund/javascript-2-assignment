@@ -10,8 +10,7 @@
 		loadDone = true;
 	});
 
-	let character1Name;
-	let character2Name;
+	let characterName = [,];
 
 	let character1;
 	let character2;
@@ -203,33 +202,21 @@
 
 		<!-- Character picker -->
 		<div class="flex w-full  flex-row justify-around">
-			<div class="flex flex-col">
-				<label for="character1Name">Pick character 1</label>
-				<select
-					class="rounded border"
-					bind:value={character1Name}
-					on:change={(showCompareCharactersButton = false)}
-					name="character1Name"
-					id="character1Name">
-					{#each allCharacters as character}
-						<option value={character}>{character}</option>
-					{/each}
-				</select>
-			</div>
-
-			<div class="flex flex-col">
-				<label for="character2Name">Pick character 2</label>
-				<select
-					class="rounded border"
-					bind:value={character2Name}
-					on:change={(showCompareCharactersButton = false)}
-					name="character2Name"
-					id="character2Name">
-					{#each allCharacters as character}
-						<option value={character}>{character}</option>
-					{/each}
-				</select>
-			</div>
+			{#each [1, 2] as _, i}
+				<div class="flex flex-col">
+					<label for="character{i + 1}Name">Pick character {i + 1}</label>
+					<select
+						class="rounded border"
+						bind:value={characterName[i]}
+						on:change={(showCompareCharactersButton = false)}
+						name="character{i + 1}Name"
+						id="character{i + 1}Name">
+						{#each allCharacters as character}
+							<option value={character}>{character}</option>
+						{/each}
+					</select>
+				</div>
+			{/each}
 		</div>
 
 		<!-- getDataButton -->
@@ -238,11 +225,9 @@
 				removeOldData();
 				character1Loading = true;
 				character2Loading = true;
-				// character1 = await createCharacter(character1, character1Name, character1LoadPromise);
-				// await createCharacter(character2, character2Name, character2LoadPromise);
 				showCompareCharactersButton = true;
 			}}
-			class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300"
+			class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 			>Get data</button>
 
 		<!-- showCompareCharactersButton -->
@@ -250,7 +235,7 @@
 			<div class="items-center">
 				{#if showCompareCharactersButton}
 					<button
-						class="outline-3 outline-solid my-4 w-32 rounded-lg bg-black/70 p-2 text-yellow-400 outline-yellow-400"
+						class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 						on:click={() => {
 							comparisonString = "";
 							printCharacterData = true;
@@ -267,7 +252,7 @@
 		<div class="flex w-[100vw] flex-row justify-around">
 			{#if character1Loading}
 				<div class="relative">
-					{#await createCharacter(character1, character1Name, 1)}
+					{#await createCharacter(character1, characterName[0], 1)}
 						<p class="absolute left-0 top-0">Loading...</p>
 					{:catch error}
 						<p class="absolute left-0 top-0">Couldn't load data :(</p>
@@ -277,7 +262,7 @@
 
 			{#if character2Loading}
 				<div class="relative">
-					{#await createCharacter(character2, character2Name, 2)}
+					{#await createCharacter(character2, characterName[1], 2)}
 						<p class="absolute left-0 top-0">Loading...</p>
 					{:catch error}
 						<p class="absolute left-0 top-0">Couldn't load data :(</p>
@@ -290,7 +275,7 @@
 		<!-- {#if character1 && character2} -->
 		<div class="flex flex-row gap-2">
 			{#each [character1, character2] as character, i}
-				<article class="flex flex-col items-center">
+				<article class="flex flex-col items-center gap-2">
 					{#if character}
 						<h2 class="text-xl md:text-2xl">
 							{character.name}
@@ -322,10 +307,12 @@
 					{#if character}
 						<div class="flex-row flex-wrap items-center [&>*]:m-2">
 							<button
+								class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 								on:click={async () => {
 									firstAppearance[i] = await character.returnFirstAppearance(character.movies);
 								}}>Show first appearance</button>
 							<button
+								class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 								on:click={async () => {
 									isLoading["sameMovies"] = true;
 									starredInSameMovies = character.returnSameMoviesArray(
@@ -345,6 +332,7 @@
 									console.log(starredInSameMovies);
 								}}>Show same movies</button>
 							<button
+								class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 								on:click={async () => {
 									isLoading["planets"] = true;
 
@@ -362,6 +350,7 @@
 									console.log(planets);
 								}}>Show planets</button>
 							<button
+								class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 								on:click={async () => {
 									isLoading[`vehicles_${i}`] = true;
 
@@ -375,7 +364,7 @@
 
 									isLoading[`vehicles_${i}`] = false;
 									console.log(mostExpensiveVehicles);
-								}}>Show most expensive vehicles</button>
+								}}>Show most expensive vehicle</button>
 						</div>
 					{/if}
 				</article>
@@ -407,18 +396,30 @@
 			{#if isLoading[`vehicles_0`]}
 				<p>Loading vehicles...</p>
 			{:else if mostExpensiveVehicles[0] && typeof mostExpensiveVehicles[0] === "object"}
-				<p>
-					{character1.name}'s most expensive vehicle is a {mostExpensiveVehicles[0][0].name} with a value
-					of {mostExpensiveVehicles[0][0].cost_in_credits}.
-				</p>
+				{#if mostExpensiveVehicles[0].length > 0}
+					<p>
+						{character1.name}'s most expensive vehicle is a {mostExpensiveVehicles[0][0].name} with a
+						value of {mostExpensiveVehicles[0][0].cost_in_credits}.
+					</p>
+				{:else}
+					<p>
+						{character1.name} does not own any vehicles.
+					</p>
+				{/if}
 			{/if}
 			{#if isLoading["vehicles_1"]}
 				<p>Loading vehicles...</p>
 			{:else if mostExpensiveVehicles[1] && typeof mostExpensiveVehicles[1] === "object"}
-				<p>
-					{character2.name}'s most expensive vehicle is a {mostExpensiveVehicles[1][0].name} with a value
-					of {mostExpensiveVehicles[1][0].cost_in_credits} credits.
-				</p>
+				{#if mostExpensiveVehicles[1].length > 0}
+					<p>
+						{character2.name}'s most expensive vehicle is a {mostExpensiveVehicles[1][0].name} with a
+						value of {mostExpensiveVehicles[1][0].cost_in_credits} credits.
+					</p>
+				{:else}
+					<p>
+						{character2.name} does not own any vehicles.
+					</p>
+				{/if}
 			{/if}
 		</div>
 
@@ -475,7 +476,7 @@
 
 	:global(body) {
 		background-image: url("/pexels-alex-andrews-5086477.webp");
-		background-size: 200%;
+		background-size: 400%;
 	}
 
 	:global(body, select) {
