@@ -34,8 +34,6 @@ export class Character {
 	async returnFirstAppearance(movies) {
 		let promises = movies.map((movie) => fetchSpecifics(movie));
 		let allMovies = await Promise.allSettled(promises);
-		allMovies = allMovies.map((promise) => promise.status === "fulfilled" && promise.value);
-		/** @type {number} */
 		allMovies = allMovies.map((movie) => movie.value.release_date);
 		console.log(allMovies);
 
