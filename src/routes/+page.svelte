@@ -14,12 +14,12 @@
 	let characterArray = [,];
 	let characterLoading = [,];
 
-	let result;
+	let result = [,];
 
 	let printCharacterData = false;
 	let printExtraData = false;
 	let showCompareCharactersButton = false;
-	let firstAppearance = [false, false];
+	let firstAppearance = [,];
 
 	let starredInSameMovies;
 	let planets;
@@ -30,20 +30,21 @@
 	async function createCharacter(inputCharacter, inputName, inputNum) {
 		if (inputCharacter?.name === inputName) {
 			// already same - skip logic
+			characterLoading[inputNum] = false;
 			return inputCharacter;
 		}
 
 		removeOldData();
 
 		try {
-			result = await api.fetchCharacterData(inputName);
+			result[inputNum] = await api.fetchCharacterData(inputName);
 		} catch (error) {
-			result = error;
+			result[inputNum] = error;
 		}
 
-		console.log(result.results[0]);
+		console.log(result[inputNum].results[0]);
 
-		let image = "images/" + result.results[0].name.replaceAll(" ", "_") + ".png";
+		let image = "images/" + result[inputNum].results[0].name.replaceAll(" ", "_") + ".png";
 
 		let {
 			name,
@@ -54,7 +55,7 @@
 			skin_color: skinColor,
 			eye_color: eyeColor,
 			films: movies,
-		} = result.results[0];
+		} = result[inputNum].results[0];
 
 		let character = new Character(
 			name,
@@ -76,16 +77,18 @@
 			characterArray[1] = character;
 			characterLoading[1] = false;
 		}
-		return result;
+		// return result;
 	}
 
 	function removeOldData() {
 		printCharacterData = false;
+    printExtraData = false;
 		showCompareCharactersButton = true;
 		firstAppearance = [false, false];
 		starredInSameMovies = [];
 		planets = [];
 		mostExpensiveVehicles = [0, 0];
+    isLoading = {};
 	}
 
 	function caps(string) {
@@ -162,6 +165,7 @@
 	<link rel="preload" href="{base}/StarJediRounded.woff2" as="font" type="font/woff2" crossorigin />
 </svelte:head>
 
+{result}
 <!-- Loading spinner -->
 {#if !loadDone}
 	<div class="h-[100vh] w-[100vw] bg-black">
@@ -217,6 +221,11 @@
 				removeOldData();
 				characterLoading[0] = true;
 				characterLoading[1] = true;
+				let promises = [
+					createCharacter(characterArray[0], characterName[0], 0),
+					createCharacter(characterArray[1], characterName[1], 1),
+				];
+				await promises.allSettled();
 				showCompareCharactersButton = true;
 			}}
 			class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
@@ -243,13 +252,12 @@
 		<!-- Loading thingy for promises -->
 		<div class="flex w-[100vw] flex-row justify-around">
 			{#each Array(2) as _, i}
-				{#if characterLoading[i]}
+				{#if result[i] instanceof Error}
+					<p class="rounded bg-red-400 p-2 text-xl text-black">Failed to fetch! :(</p>
+				{:else if characterLoading[i]}
 					<div class="relative">
-						{#await createCharacter(characterArray[i], characterName[i], i)}
-							<p class="absolute left-0 top-0">Loading...</p>
-						{:catch error}
-							<p class="absolute left-0 top-0">Couldn't load data :(</p>
-						{/await}
+						<p class="absolute left-0 top-0">Loading...</p>
+						<!-- <p class="absolute left-0 top-0">Couldn't load data :(</p> -->
 					</div>
 				{/if}
 			{/each}
@@ -296,6 +304,7 @@
 									printExtraData = true;
 									isLoading[`firstAppearance_${i}`] = true;
 									firstAppearance[i] = await character.returnFirstAppearance(character.movies);
+
 									isLoading[`firstAppearance_${i}`] = false;
 								}}>Show first appearance</button>
 							<button
@@ -308,6 +317,9 @@
 										characterArray[1].movies
 									);
 									starredInSameMovies = await character.returnNameOfSameMovies(starredInSameMovies);
+									if (starredInSameMovies instanceof Error) {
+										return starredInSameMovies;
+									}
 									starredInSameMovies = starredInSameMovies.join(", ");
 									let index = starredInSameMovies.lastIndexOf(", ");
 									starredInSameMovies =
@@ -328,6 +340,9 @@
 										characterArray[0].name,
 										characterArray[1].name,
 									]);
+									if (planets instanceof Error) {
+										return planets;
+									}
 									let planetsAreSame;
 									if (planets[0] === planets[1]) {
 										planetsAreSame = true;
@@ -368,20 +383,28 @@
 			<div
 				class="flex-col flex-col rounded bg-slate-200 p-2 text-black outline-double outline-4 outline-blue-300">
 				{#each Array(2) as _, i}
-					{#if isLoading[`firstAppearance_${i}`]}
+					{#if firstAppearance[i] instanceof Error}
+						<p class="rounded bg-red-400 p-2 text-xl text-black">
+							Error fetching first appearance! :(
+						</p>
+					{:else if isLoading[`firstAppearance_${i}`]}
 						<p>Loading first appearance...</p>
 					{:else if firstAppearance[i]}
 						<p>{characterArray[i].name} first appeared on film in {firstAppearance[i]}.</p>
 					{/if}
 				{/each}
-				{#if isLoading["sameMovies"]}
+				{#if starredInSameMovies instanceof Error}
+					<p class="rounded bg-red-400 p-2 text-xl text-black">Error fetching movies! :(</p>
+				{:else if isLoading["sameMovies"]}
 					<p>Loading movies...</p>
 				{:else if starredInSameMovies && typeof starredInSameMovies === "string"}
 					<p>
 						{characterArray[0].name} and {characterArray[1].name} both starred in {starredInSameMovies}.
 					</p>
 				{/if}
-				{#if isLoading["planets"]}
+				{#if planets instanceof Error}
+					<p class="rounded bg-red-400 p-2 text-xl text-black">Error fetching planets! :(</p>
+				{:else if isLoading["planets"]}
 					<p>Loading planets...</p>
 				{:else if planets && typeof planets === "string"}
 					<p>
@@ -389,7 +412,9 @@
 					</p>
 				{/if}
 				{#each Array(2) as _, i}
-					{#if isLoading[`vehicles_${i}`]}
+					{#if mostExpensiveVehicles[i] instanceof Error}
+						<p class="rounded bg-red-400 p-2 text-xl text-black">Error fetching vehicles! :(</p>
+					{:else if isLoading[`vehicles_${i}`]}
 						<p>Loading vehicles...</p>
 					{:else if mostExpensiveVehicles[i] && typeof mostExpensiveVehicles[i] === "object"}
 						{#if mostExpensiveVehicles[i].length > 0}

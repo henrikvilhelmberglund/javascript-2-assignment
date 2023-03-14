@@ -1,8 +1,7 @@
-
 /**
- * 
- * @param {string} name 
- * @returns 
+ *
+ * @param {string} name
+ * @returns
  */
 export async function fetchCharacterData(name) {
 	try {
@@ -13,14 +12,15 @@ export async function fetchCharacterData(name) {
 		// console.log(data);
 		return data;
 	} catch (error) {
-		return Promise.reject(error);
+		// return Promise.reject(error);
+		throw error;
 	}
 }
 
 /**
- * 
- * @param {string} link 
- * @returns 
+ *
+ * @param {string} link
+ * @returns
  */
 export async function fetchSpecifics(link) {
 	try {
@@ -31,6 +31,6 @@ export async function fetchSpecifics(link) {
 		// console.log(data);
 		return data;
 	} catch (error) {
-		return error;
+		throw error;
 	}
 }

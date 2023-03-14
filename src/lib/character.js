@@ -32,10 +32,16 @@ export class Character {
 	 * @returns
 	 */
 	async returnFirstAppearance(movies) {
+		let allMovies;
 		let promises = movies.map((movie) => fetchSpecifics(movie));
-		let allMovies = await Promise.allSettled(promises);
-		allMovies = allMovies.map((movie) => movie.value.release_date);
-		console.log(allMovies);
+		try {
+			allMovies = await Promise.allSettled(promises);
+      allMovies = allMovies.map((movie) => movie.value.release_date);
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
+		// console.log(allMovies);
 
 		// old silly version
 		// let allMovies = [];
@@ -76,57 +82,71 @@ export class Character {
 	 * @returns {Promise<Array<string>>} A promise that resolves to an array of movie titles.
 	 */
 	async returnNameOfSameMovies(movies) {
-		let promises = movies.map((movie) => fetchSpecifics(movie));
-		/** @type {Array<PromiseSettledResult<Movie>>} */
-		let nameOfSameMovies = await Promise.allSettled(promises);
-		nameOfSameMovies = nameOfSameMovies.map((movie) => movie.value.title);
-		console.log(nameOfSameMovies);
+		try {
+			let promises = movies.map((movie) => fetchSpecifics(movie));
+			/** @type {Array<PromiseSettledResult<Movie>>} */
+			let nameOfSameMovies = await Promise.allSettled(promises);
+			nameOfSameMovies = nameOfSameMovies.map((movie) => movie.value.title);
+			console.log(nameOfSameMovies);
 
-		// old silly version
-		// let allMovies = [];
-		// for (const movie of movies) {
-		// 	let currentMovie = await fetchSpecifics(movie);
-		// 	allMovies.push(currentMovie.release_date);
-		// 	console.log(currentMovie.release_date);
-		// }
-		// console.log(firstAppearance);
-		return nameOfSameMovies;
+			// old silly version
+			// let allMovies = [];
+			// for (const movie of movies) {
+			// 	let currentMovie = await fetchSpecifics(movie);
+			// 	allMovies.push(currentMovie.release_date);
+			// 	console.log(currentMovie.release_date);
+			// }
+			// console.log(firstAppearance);
+			return nameOfSameMovies;
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
 	}
 
 	async returnNameOfPlanets(characterNames) {
-		let characterPromises = characterNames.map((character) => fetchCharacterData(character));
-		let characterData = await Promise.allSettled(characterPromises);
-		characterData = characterData.map((character) => character.value.results[0]);
+		try {
+			let characterPromises = characterNames.map((character) => fetchCharacterData(character));
+			let characterData = await Promise.allSettled(characterPromises);
+			characterData = characterData.map((character) => character.value.results[0]);
 
-		let promises = characterData.map((character) => fetchSpecifics(character.homeworld));
-		let nameOfPlanets = await Promise.allSettled(promises);
-		nameOfPlanets = nameOfPlanets.map((planet) => planet.value.name);
-		console.log(nameOfPlanets);
-		return nameOfPlanets;
+			let promises = characterData.map((character) => fetchSpecifics(character.homeworld));
+			let nameOfPlanets = await Promise.allSettled(promises);
+			nameOfPlanets = nameOfPlanets.map((planet) => planet.value.name);
+			console.log(nameOfPlanets);
+			return nameOfPlanets;
+		} catch (error) {
+			console.log(error);
+			return error;
+		}
 	}
 
 	async returnMostExpensiveVehicles(characterNames) {
-		let characterPromises = characterNames.map((character) => fetchCharacterData(character));
-		let characterData = await Promise.allSettled(characterPromises);
-		characterData = characterData.map((character) => character.value.results[0]);
+		try {
+			let characterPromises = characterNames.map((character) => fetchCharacterData(character));
+			let characterData = await Promise.allSettled(characterPromises);
+			characterData = characterData.map((character) => character.value.results[0]);
 
-		let vehiclePromises = characterData.flatMap((character) =>
-			character.vehicles.map((vehicle) => fetchSpecifics(vehicle))
-		);
-		let starshipPromises = characterData.flatMap((character) =>
-			character.starships.map((starship) => fetchSpecifics(starship))
-		);
-		let totalVehicles = await Promise.allSettled([...vehiclePromises, ...starshipPromises]);
+			let vehiclePromises = characterData.flatMap((character) =>
+				character.vehicles.map((vehicle) => fetchSpecifics(vehicle))
+			);
+			let starshipPromises = characterData.flatMap((character) =>
+				character.starships.map((starship) => fetchSpecifics(starship))
+			);
+			let totalVehicles = await Promise.allSettled([...vehiclePromises, ...starshipPromises]);
 
-		let maximumPrice = totalVehicles
-			.filter(
-				(result) => result.status === "fulfilled" && result.value.cost_in_credits !== "unknown"
-			)
-			.map((result) => result.value)
-			.sort((a, b) => b.cost_in_credits - a.cost_in_credits);
-		// nameOfPlanets = nameOfPlanets.map((planet) => planet.value.name);
-		console.log(maximumPrice);
-		return maximumPrice;
+			let maximumPrice = totalVehicles
+				.filter(
+					(result) => result.status === "fulfilled" && result.value.cost_in_credits !== "unknown"
+				)
+				.map((result) => result.value)
+				.sort((a, b) => b.cost_in_credits - a.cost_in_credits);
+			// nameOfPlanets = nameOfPlanets.map((planet) => planet.value.name);
+			console.log(maximumPrice);
+			return maximumPrice;
+		} catch (error) {
+			return error;
+		}
 	}
 }
 
