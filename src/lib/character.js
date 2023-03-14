@@ -1,5 +1,18 @@
 import { fetchCharacterData, fetchSpecifics } from "./api";
+
 export class Character {
+	/**
+	 *
+	 * @param {string} name
+	 * @param {string} gender
+	 * @param {string} height
+	 * @param {string} mass
+	 * @param {string} hairColor
+	 * @param {string} skinColor
+	 * @param {string} eyeColor
+	 * @param {Array<string>} movies
+	 * @param {string} pictureURL
+	 */
 	constructor(name, gender, height, mass, hairColor, skinColor, eyeColor, movies, pictureURL) {
 		this.name = name;
 		this.gender = gender;
@@ -13,9 +26,16 @@ export class Character {
 		this.pictureURL = pictureURL;
 	}
 
+	/**
+	 *
+	 * @param {Array<string>} movies
+	 * @returns
+	 */
 	async returnFirstAppearance(movies) {
 		let promises = movies.map((movie) => fetchSpecifics(movie));
 		let allMovies = await Promise.allSettled(promises);
+		allMovies = allMovies.map((promise) => promise.status === "fulfilled" && promise.value);
+		/** @type {number} */
 		allMovies = allMovies.map((movie) => movie.value.release_date);
 		console.log(allMovies);
 
@@ -47,8 +67,19 @@ export class Character {
 		return same;
 	}
 
+	/**
+	 * @typedef {Object} Movie
+	 * @property {string} title - The title of the movie.
+	 */
+
+	/**
+	 * ## Function description
+	 * @param {Array<string>} movies - An array of movie names.
+	 * @returns {Promise<Array<string>>} A promise that resolves to an array of movie titles.
+	 */
 	async returnNameOfSameMovies(movies) {
 		let promises = movies.map((movie) => fetchSpecifics(movie));
+		/** @type {Array<PromiseSettledResult<Movie>>} */
 		let nameOfSameMovies = await Promise.allSettled(promises);
 		nameOfSameMovies = nameOfSameMovies.map((movie) => movie.value.title);
 		console.log(nameOfSameMovies);
