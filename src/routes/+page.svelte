@@ -201,7 +201,7 @@
 				<div class="flex flex-col">
 					<label for="character{i + 1}Name">Pick character {i + 1}</label>
 					<select
-						class="rounded border"
+						class="rounded border py-1"
 						bind:value={characterName[i]}
 						on:change={(showCompareCharactersButton = false)}
 						name="character{i + 1}Name"
@@ -222,10 +222,10 @@
 				characterLoading[1] = true;
 
 				createCharacter(characterArray[0], characterName[0], 0),
-				createCharacter(characterArray[1], characterName[1], 1),
+					createCharacter(characterArray[1], characterName[1], 1),
 					(showCompareCharactersButton = true);
 			}}
-			class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
+			class="outline-3 outline-solid rounded-lg bg-black/70 p-2 m-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 			>Get data</button>
 
 		<!-- showCompareCharactersButton -->
@@ -377,7 +377,7 @@
 		<!-- DOM info box -->
 		{#if printExtraData}
 			<div
-				class="flex-col flex-col rounded bg-slate-200 p-2 text-black outline-double outline-4 outline-blue-300">
+				class="flex-col flex-col divide-y rounded bg-slate-200 p-2 text-black outline-double outline-4 outline-blue-300">
 				{#each Array(2) as _, i}
 					{#if firstAppearance[i] instanceof Error}
 						<p class="rounded bg-red-400 p-2 text-xl text-black">
@@ -396,6 +396,10 @@
 				{:else if starredInSameMovies && typeof starredInSameMovies === "string"}
 					<p>
 						{characterArray[0].name} and {characterArray[1].name} both starred in {starredInSameMovies}.
+					</p>
+          {:else if !starredInSameMovies}
+					<p>
+						{characterArray[0].name} and {characterArray[1].name} did not star in the same movie.
 					</p>
 				{/if}
 				{#if planets instanceof Error}
