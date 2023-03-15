@@ -82,13 +82,13 @@
 
 	function removeOldData() {
 		printCharacterData = false;
-    printExtraData = false;
+		printExtraData = false;
 		showCompareCharactersButton = true;
 		firstAppearance = [false, false];
 		starredInSameMovies = [];
 		planets = [];
 		mostExpensiveVehicles = [0, 0];
-    isLoading = {};
+		isLoading = {};
 	}
 
 	function caps(string) {
@@ -220,12 +220,10 @@
 				removeOldData();
 				characterLoading[0] = true;
 				characterLoading[1] = true;
-				let promises = [
-					createCharacter(characterArray[0], characterName[0], 0),
-					createCharacter(characterArray[1], characterName[1], 1),
-				];
-				await promises.allSettled();
-				showCompareCharactersButton = true;
+
+				createCharacter(characterArray[0], characterName[0], 0),
+				createCharacter(characterArray[1], characterName[1], 1),
+					(showCompareCharactersButton = true);
 			}}
 			class="outline-3 outline-solid rounded-lg bg-black/70 p-2 text-yellow-300 outline-yellow-300 hover:bg-yellow-300 hover:text-black"
 			>Get data</button>
@@ -263,7 +261,6 @@
 		</div>
 
 		<!-- Character display -->
-		<!-- {#if character1 && character2} -->
 		<div class="flex flex-row gap-2">
 			{#each characterArray as character, i}
 				<article class="flex flex-col items-center gap-2">
@@ -486,12 +483,12 @@
 		background-image: url("/pexels-alex-andrews-5086477.webp");
 		background-size: 400%;
 	}
-  @media screen and (min-width: 600px) {
-  :global(body) {
-		background-image: url("/pexels-alex-andrews-5086477.webp");
-		background-size: 160%;
+	@media screen and (min-width: 600px) {
+		:global(body) {
+			background-image: url("/pexels-alex-andrews-5086477.webp");
+			background-size: 160%;
+		}
 	}
-}
 
 	:global(body, select) {
 		background-color: black;
