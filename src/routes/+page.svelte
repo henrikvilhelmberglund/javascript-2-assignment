@@ -487,6 +487,12 @@
 		background-image: url("/pexels-alex-andrews-5086477.webp");
 		background-size: 400%;
 	}
+  @media screen and (min-width: 600px) {
+  :global(body) {
+		background-image: url("/pexels-alex-andrews-5086477.webp");
+		background-size: 160%;
+	}
+}
 
 	:global(body, select) {
 		background-color: black;
