@@ -165,7 +165,6 @@
 	<link rel="preload" href="{base}/StarJediRounded.woff2" as="font" type="font/woff2" crossorigin />
 </svelte:head>
 
-{result}
 <!-- Loading spinner -->
 {#if !loadDone}
 	<div class="h-[100vh] w-[100vw] bg-black">
