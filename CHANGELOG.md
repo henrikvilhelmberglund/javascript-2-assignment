@@ -2,6 +2,25 @@
 
 All notable changes to this project will be documented in this file. See [commit-and-tag-version](https://github.com/absolute-version/commit-and-tag-version) for commit guidelines.
 
+## [1.0.0](https://github.com/henrikvilhelmberglund/javascript-2-assignment/compare/v0.0.2...v1.0.0) (2023-03-15)
+
+
+### Features
+
+* :lipstick: add media query for background image ([11f25af](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/11f25af58559f158d688943c507ef701a636f744))
+* :label: add some type definitions and give up ([2777dcb](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/2777dcb004e6b9caed3b5f15e378d784673ad3e3))
+* :lipstick: add styling for character method buttons, some optimization for DOM logic ([#15](https://github.com/henrikvilhelmberglund/javascript-2-assignment/issues/15)) ([cd5f30c](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/cd5f30cb3f744eac6a0cebfc202afcef860d9716))
+
+
+### Bug Fixes
+
+* :lipstick: small fixes ([60f0242](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/60f0242ecd17a8d6c9e542429dada8a698c13258))
+* :fire: remove unneeded code ([efde63e](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/efde63e11deba911153c51e5df1884c6c0f89834))
+* :fire: remove debug thingy ([10eda96](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/10eda96d22879a619f0fd200550f050fda5f54f0))
+* :bug: fix bugs, improve error handling ([33f52b6](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/33f52b64a14da2638999eb13c3cdc23949a9ee78))
+* :bug: fix movies bug oops ([970120b](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/970120be0f33ce4b6e24d98cb826faf229ebad35))
+* :zap: optimize, some styling ([454a0b9](https://github.com/henrikvilhelmberglund/javascript-2-assignment/commit/454a0b9ad86bc73af35002f0ed436725d1b51d94))
+
 ## [0.0.2](https://github.com/henrikvilhelmberglund/javascript-2-assignment/compare/v0.0.1...v0.0.2) (2023-03-13)
 
 
