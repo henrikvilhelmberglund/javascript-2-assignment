@@ -160,6 +160,8 @@
 </script>
 
 <svelte:head>
+  <title>Star Wars - The Comparisons Strike Back</title>
+  <meta name="description" content="This is a page where you can compare various stats of Star Wars characters.">
 	<link rel="preload" href="{base}/StarJedi.woff2" as="font" type="font/woff2" crossorigin />
 	<link rel="preload" href="{base}/StarJediHollow.woff2" as="font" type="font/woff2" crossorigin />
 	<link rel="preload" href="{base}/StarJediRounded.woff2" as="font" type="font/woff2" crossorigin />
